@@ -30,7 +30,7 @@
 
 " generates whitespace
 function! Whitespace(indent)
-	let tabstop = 3
+	let tabstop = &ts
 
 	return repeat(' ', a:indent * tabstop)
 endfunction
@@ -99,8 +99,9 @@ function! CssPretty(...)
 
 			let declarations = []
 			for o in split(contents, ';')
-				let property = Trim(split(o, ':')[0])
-				let value = Trim(split(o, ':')[1])
+                let colonIndex = stridx(o, ':')
+                let property = Trim(strpart(o, 0, colonIndex))
+                let value = Trim(strpart(o, colonIndex+1))
 
 				call add(declarations, {'property': property, 'value': value})
 			endfor
@@ -118,8 +119,13 @@ function! CssPretty(...)
 	for x in range(len(matches))
 		let match = matches[x]
 
-		call add(lines, match['selector'])
-		call add(lines, '{')
+        if g:CssPrettyLeftBraceAtNewLine
+            call add(lines, match['selector'])
+            call add(lines, '{')
+        else
+            call add(lines, match['selector'].'{')
+        endif
+
 		for declaration in match['declarations']
 			call add(lines, Whitespace(1) . declaration['property'] . ": " . declaration['value'] . ';')
 		endfor
@@ -140,7 +146,7 @@ function! CssPretty(...)
 	endfor
 	call cursor(lastline, 1)
 	for x in range(lastline - firstline + 1)
-		exe 'normal ' . "a\b\e"	
+		exe 'normal ' . "a\b\e"
 	endfor
 
 	" and appending into the buffer
@@ -151,3 +157,8 @@ function! CssPretty(...)
 	endfor
 
 endfunction
+
+if !exists(g:CssPrettyLeftBraceAtNewLine)
+    let g:CssPrettyLeftBraceAtNewLine=0
+endif
+nmap <F1> :call CssPretty()<cr>
