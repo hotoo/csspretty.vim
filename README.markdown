@@ -1,6 +1,6 @@
-csspretty.vim
-@Author 闲耘™<hotoo.cn[AT]gmail.com>
-@Modifier lilydjwg <lilydjwg@gmail.com>
+csspretty.vim  
+@Author 闲耘™<hotoo.cn[AT]gmail.com>  
+@Modifier lilydjwg <lilydjwg@gmail.com>  
 
 csspretty for vim.
 
